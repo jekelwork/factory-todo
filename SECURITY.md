@@ -60,18 +60,13 @@ repository:
 
 ## Scope: the application
 
-<!-- example -->
-> *Makers Market example:* in scope is everything running in the deployed container (the API, the SPA,
-> the deployment manifests) and each external service the application calls. The most interesting area is
-> listed first: the single query predicate that decides what a viewer may see, then signed links,
-> notifications and uploaded files, each with the file that implements it. Out of scope: the development
-> stub authentication mode (refused at startup in production), attacks that need an administrator to
-> attack their own deployment, denial of service by volume, and scanner findings that cannot be reached
-> in this configuration.
-<!-- /example -->
+In scope is the Node server's HTTP API and its handling of todo data in the SQLite database (both under
+src/server, which does not exist yet). The area where a mistake is invisible to the person it affects is
+stored todos being overwritten or dropped without anyone noticing.
 
-Replace the example with this application's own scope. List the areas where a mistake is invisible to the
-person it affects, and cite the file that implements each one. State what is out of scope, and why.
+Out of scope: authentication, because the application has a single user and none is built; denial of
+service by volume; a developer attacking their own local instance; and scanner findings that cannot be
+reached in this configuration.
 
 ## What is already known
 

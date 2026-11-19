@@ -39,6 +39,7 @@ import { join, relative, resolve } from 'node:path';
 export const GENERATED = [
   { pattern: /^pnpm-lock\.yaml$/, command: 'pnpm install' },
   // local: { pattern: /^apps\/api\/drizzle\//, command: 'pnpm db:generate' },
+  { pattern: /^src\/server\/db\/migrations\//, command: 'pnpm db:generate' }, // local:
 ];
 
 /** Paths, relative to the repository root, that agents read but never edit unasked; each with what it is. */
