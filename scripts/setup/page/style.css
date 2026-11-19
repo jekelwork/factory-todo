@@ -1,0 +1,409 @@
+/* The setup guide. Calm and readable by someone who has never seen the kit: one step at a time, large type,
+   the reason before the instruction. Light and dark from the system setting. */
+
+:root {
+  --bg: #fbfbfa;
+  --panel: #ffffff;
+  --ink: #1d1f21;
+  --muted: #5b6168;
+  --line: #e2e4e7;
+  --accent: #2a6fdb;
+  --accent-soft: #e6efff;
+  --pass: #1e7b4f;
+  --fail: #b3261e;
+  --blocked: #8a5a00;
+  --code-bg: #f2f3f5;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141517;
+    --panel: #1c1e21;
+    --ink: #e8e9eb;
+    --muted: #a3a8ae;
+    --line: #2e3136;
+    --accent: #7aa7ff;
+    --accent-soft: #1d2a44;
+    --pass: #5cc99a;
+    --fail: #ff8a80;
+    --blocked: #f0b45a;
+    --code-bg: #24272b;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    17px / 1.55 system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+}
+
+header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+header .progress {
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+nav.rail {
+  padding: 20px 12px;
+  border-right: 1px solid var(--line);
+}
+
+nav.rail ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+nav.rail button {
+  all: unset;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+nav.rail button:hover,
+nav.rail button:focus-visible {
+  background: var(--accent-soft);
+}
+
+nav.rail button[aria-current="step"] {
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+.mark {
+  width: 1.4em;
+  text-align: center;
+  flex: none;
+}
+
+.mark.pass {
+  color: var(--pass);
+}
+.mark.fail {
+  color: var(--fail);
+}
+.mark.blocked {
+  color: var(--blocked);
+}
+.mark.todo {
+  color: var(--muted);
+}
+
+.skipped {
+  color: var(--muted);
+  font-size: 13px;
+  margin-left: auto;
+}
+
+main {
+  padding: 24px 32px 48px;
+  min-width: 0;
+}
+
+main:focus {
+  outline: none;
+}
+
+main .label {
+  color: var(--muted);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+main h2 {
+  margin: 4px 0 8px;
+  font-size: 28px;
+}
+
+.why {
+  font-size: 19px;
+  margin: 0 0 16px;
+}
+
+.picture {
+  color: var(--ink);
+  margin: 16px 0;
+}
+
+.picture svg {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+}
+
+.result {
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--muted);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 14px 16px;
+  margin: 20px 0;
+}
+
+.result.pass {
+  border-left-color: var(--pass);
+}
+.result.fail {
+  border-left-color: var(--fail);
+}
+.result.blocked {
+  border-left-color: var(--blocked);
+}
+
+.result .summary {
+  font-weight: 600;
+  margin: 0;
+}
+
+.result.busy {
+  opacity: 0.55;
+}
+.result.busy .summary::after {
+  content: " — checking…";
+  font-weight: 400;
+}
+
+.result .note,
+.result .checked {
+  color: var(--muted);
+  font-size: 0.9em;
+  margin: 8px 0 0;
+}
+
+.result .accept,
+.result .apply,
+.result .accepted {
+  margin-top: 12px;
+}
+
+.result .answer {
+  margin: 12px 0 0;
+  font-weight: 600;
+}
+
+.result .detail {
+  white-space: pre-line;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.fix {
+  margin-top: 12px;
+}
+
+.cmd {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin: 6px 0;
+}
+
+.cmd code,
+.copytext {
+  flex: 1;
+  background: var(--code-bg);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font:
+    14px / 1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.copytext {
+  font-family: inherit;
+  font-size: 15px;
+}
+
+button.btn {
+  font: inherit;
+  font-size: 15px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+button.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  button.btn.primary {
+    color: #0b1424;
+  }
+}
+
+button.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.stages {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  border-left: 2px solid var(--line);
+}
+
+.stages li {
+  padding: 6px 0 6px 16px;
+  position: relative;
+}
+
+.stages li.done::before,
+.stages li::before {
+  content: "○";
+  position: absolute;
+  left: -9px;
+  background: var(--bg);
+  color: var(--muted);
+}
+
+.stages li.done::before {
+  content: "✓";
+  color: var(--pass);
+}
+
+.stages li .loop {
+  display: block;
+  color: var(--accent);
+  font-size: 14px;
+}
+
+a {
+  color: var(--accent);
+}
+
+@media (max-width: 760px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  nav.rail {
+    min-width: 0;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    padding: 8px 16px;
+  }
+  nav.rail ol {
+    display: flex;
+    overflow-x: auto;
+    gap: 4px;
+  }
+  nav.rail button {
+    width: auto;
+    white-space: nowrap;
+  }
+  nav.rail .title {
+    display: none;
+  }
+  nav.rail button[aria-current="step"] .title {
+    display: inline;
+  }
+  main {
+    padding: 16px;
+  }
+  main h2 {
+    font-size: 24px;
+  }
+}
+
+.connect {
+  margin-top: 8px;
+}
+.result h3.byhand {
+  font-size: 1em;
+  margin: 16px 0 0;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.connect h3 {
+  font-size: 1em;
+  margin: 12px 0 8px;
+}
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 6px 0;
+}
+.fields input,
+.fields select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 10px;
+  min-width: 0;
+}
+.fields input {
+  flex: 1 1 12em;
+}
+.handoff {
+  margin: 6px 0;
+}
+
+.recommended {
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+.recommended p {
+  margin: 0 0 8px;
+}

@@ -1,0 +1,102 @@
+<!doctype html>
+<!--
+  The "what's new" deck. scripts/board/whats-new.mjs fills the double-braced slots: the title once, the
+  slides once, and the logo (logo.svg, next to this file) into every slide it writes. Everything is inline
+  on purpose: the deck is opened from a release page, and must not load anything from elsewhere. The
+  colours and the logo are Knowit's; a project that ships under another name replaces both.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+  :root {
+    --navy: #0B0B26; --cream: #FEFBE6; --lime: #55D340; --peri: #9795FF;
+    --lav: #CFCEFF; --peach: #FFD6B8; --muted: #C9C8E0;
+    --font: 'Bagoss Standard Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--navy); color: var(--cream); font-family: var(--font); font-weight: 300; }
+  .deck { height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; }
+  .slide {
+    position: relative; min-height: 100vh; scroll-snap-align: start;
+    padding: clamp(32px, 6vw, 88px) clamp(20px, 8vw, 120px);
+    display: flex; flex-direction: column; justify-content: center;
+    border-bottom: 1px solid rgba(207, 206, 255, .12);
+  }
+  .logo { position: absolute; top: clamp(20px, 3vw, 40px); right: clamp(20px, 3vw, 48px); width: clamp(72px, 8vw, 110px); color: var(--cream); }
+  .logo svg { width: 100%; height: auto; display: block; }
+  .cover { background: linear-gradient(135deg, var(--lime) 0%, #3CC7B8 45%, var(--peri) 100%); color: var(--navy); }
+  .cover .logo { color: var(--navy); }
+  .eyebrow { font-size: clamp(14px, 1.4vw, 20px); letter-spacing: .08em; text-transform: uppercase; color: var(--lav); margin: 0 0 12px; }
+  .cover .eyebrow { color: var(--navy); opacity: .8; }
+  h1 { font-size: clamp(40px, 6vw, 80px); font-weight: 300; line-height: 1.05; margin: 0 0 20px; }
+  h2 { font-size: clamp(28px, 3.4vw, 48px); font-weight: 300; line-height: 1.1; margin: 0 0 28px; }
+  h3 { font-size: clamp(17px, 1.5vw, 22px); font-weight: 400; color: var(--lime); margin: 0 0 10px; }
+  .col h3:not(:first-child) { margin-top: 24px; }
+  p { font-size: clamp(16px, 1.25vw, 19px); line-height: 1.5; max-width: 40em; margin: 0 0 14px; }
+  p.lead { font-size: clamp(17px, 1.6vw, 24px); }
+  .cover p { color: var(--navy); }
+  ul { margin: 0 0 14px; padding-left: 1.1em; }
+  li { font-size: clamp(16px, 1.25vw, 19px); line-height: 1.5; margin: 0 0 8px; max-width: 36em; }
+  li::marker { color: var(--peri); }
+  strong { font-weight: 400; color: var(--peach); }
+  .cover strong { color: var(--navy); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; background: rgba(207, 206, 255, .14); padding: 1px 5px; border-radius: 4px; }
+  a { color: var(--lav); }
+  .cover a { color: var(--navy); }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: clamp(20px, 3vw, 48px); }
+  .cols > .col { min-width: 0; }
+  .badge { display: inline-block; border: 1px solid currentColor; border-radius: 999px; padding: 4px 14px; font-size: 15px; margin-top: 12px; }
+  .nav { position: fixed; right: 16px; bottom: 16px; display: flex; gap: 8px; z-index: 2; }
+  .nav button { font: inherit; font-size: 15px; background: rgba(11, 11, 38, .85); color: var(--cream); border: 1px solid var(--lav); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+  .nav button:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+  .count { align-self: center; font-size: 14px; color: var(--muted); background: rgba(11, 11, 38, .85); padding: 6px 10px; border-radius: 999px; }
+  @media (max-width: 640px) {
+    .deck { scroll-snap-type: y proximity; }
+    .slide { padding-top: 72px; padding-bottom: 80px; justify-content: flex-start; }
+  }
+  @media (prefers-reduced-motion: no-preference) { .deck { scroll-behavior: smooth; } }
+  @media print {
+    .deck { height: auto; overflow: visible; }
+    .slide { min-height: 0; page-break-after: always; border: 0; }
+    .nav { display: none; }
+  }
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+{{SLIDES}}
+</main>
+<nav class="nav" aria-label="Slides">
+  <button type="button" id="prev" aria-label="Previous slide">↑</button>
+  <span class="count" id="count" aria-live="polite"></span>
+  <button type="button" id="next" aria-label="Next slide">↓</button>
+</nav>
+<script>
+  (() => {
+    var deck = document.getElementById('deck');
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var count = document.getElementById('count');
+    function current() {
+      var top = deck.scrollTop, best = 0;
+      slides.forEach((s, i) => { if (s.offsetTop - 4 <= top) best = i; });
+      return best;
+    }
+    function go(i) { i = Math.max(0, Math.min(slides.length - 1, i)); deck.scrollTo({ top: slides[i].offsetTop }); }
+    function update() { count.textContent = (current() + 1) + ' / ' + slides.length; }
+    document.getElementById('prev').addEventListener('click', () => { go(current() - 1); });
+    document.getElementById('next').addEventListener('click', () => { go(current() + 1); });
+    document.addEventListener('keydown', (e) => {
+      if (['ArrowDown', 'ArrowRight', 'PageDown', ' '].indexOf(e.key) >= 0) { e.preventDefault(); go(current() + 1); }
+      else if (['ArrowUp', 'ArrowLeft', 'PageUp'].indexOf(e.key) >= 0) { e.preventDefault(); go(current() - 1); }
+      else if (e.key === 'Home') { e.preventDefault(); go(0); }
+      else if (e.key === 'End') { e.preventDefault(); go(slides.length - 1); }
+    });
+    deck.addEventListener('scroll', update, { passive: true });
+    update();
+  })();
+</script>
+</body>
+</html>

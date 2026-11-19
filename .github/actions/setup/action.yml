@@ -1,0 +1,25 @@
+# The toolchain every CI job starts from: pnpm (its version from package.json's packageManager), Node's
+# version from mise.toml, so the runner and every developer's machine cannot drift, and the dependencies
+# from the lockfile, with pnpm's store cached on it. A project on npm or yarn keeps the kit's tooling in a
+# package of its own, which `factoryKit.package` in package.json names (scripts/setup/adopt.mjs): its
+# package.json and lockfile are the ones read here, and the project installs its own dependencies itself.
+name: Set up the toolchain
+description: pnpm, Node from mise.toml, and a frozen install.
+runs:
+  using: composite
+  steps:
+    - id: node
+      shell: bash
+      run: |
+        echo "version=$(sed -n 's/^node *= *"\(.*\)"/\1/p' mise.toml)" >> "$GITHUB_OUTPUT"
+        echo "dir=$(node -p "require('./package.json').factoryKit?.package ?? '.'")" >> "$GITHUB_OUTPUT"
+    - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4.3.0
+      with:
+        package_json_file: ${{ steps.node.outputs.dir }}/package.json
+    - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      with:
+        node-version: ${{ steps.node.outputs.version }}
+        cache: pnpm
+        cache-dependency-path: ${{ steps.node.outputs.dir }}/pnpm-lock.yaml
+    - run: pnpm install --frozen-lockfile --dir "${{ steps.node.outputs.dir }}"
+      shell: bash

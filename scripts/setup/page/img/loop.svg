@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220" role="img" aria-labelledby="t"><title id="t">How one item moves: report, plan, your answers, your go, the build, your merge</title>
+<style>.b{fill:none;stroke:currentColor;stroke-width:1.5}.h{fill:var(--accent-soft,#e6efff);stroke:var(--accent,#2a6fdb);stroke-width:2.5}.t{fill:currentColor;font:14px system-ui,sans-serif;text-anchor:middle}.s{fill:currentColor;opacity:.7;font:11px system-ui,sans-serif;text-anchor:middle}.y{fill:var(--accent,#2a6fdb);font:600 11px system-ui,sans-serif;text-anchor:middle}.a{stroke:currentColor;stroke-width:1.5;fill:none;marker-end:url(#m)}</style>
+<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+<rect class="b" x="10" y="60" width="90" height="60" rx="10"/><text class="t" x="55" y="95">Report</text><text class="s" x="55" y="140">someone asks</text>
+<path class="a" d="M100 90h18"/>
+<rect class="b" x="120" y="60" width="90" height="60" rx="10"/><text class="t" x="165" y="88">Plan</text><text class="s" x="165" y="106">with questions</text><text class="s" x="165" y="140">Claude writes</text>
+<path class="a" d="M210 90h18"/>
+<rect class="h" x="230" y="60" width="90" height="60" rx="10"/><text class="t" x="275" y="95">You answer</text><text class="y" x="275" y="45">YOU DECIDE</text>
+<path class="a" d="M320 90h18"/>
+<rect class="h" x="340" y="60" width="90" height="60" rx="10"/><text class="t" x="385" y="95">You say go</text><text class="y" x="385" y="45">YOU DECIDE</text>
+<path class="a" d="M430 90h18"/>
+<rect class="b" x="450" y="60" width="80" height="60" rx="10"/><text class="t" x="490" y="95">Build</text><text class="s" x="490" y="140">Claude + checks</text>
+<path class="a" d="M530 90h18"/>
+<rect class="h" x="550" y="60" width="80" height="60" rx="10"/><text class="t" x="590" y="95">You merge</text><text class="y" x="590" y="45">YOU DECIDE</text>
+<text class="s" x="320" y="195">Nothing reaches main without the three highlighted steps.</text>
+</svg>

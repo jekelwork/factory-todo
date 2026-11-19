@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" role="img" aria-labelledby="t"><title id="t">Three places checks can run: local, remote, split</title>
+<style>.b{fill:none;stroke:currentColor;stroke-width:1.5}.t{fill:currentColor;font:600 14px system-ui,sans-serif;text-anchor:middle}.s{fill:currentColor;opacity:.75;font:12px system-ui,sans-serif;text-anchor:middle}</style>
+<rect class="b" x="20" y="30" width="180" height="140" rx="10"/><text class="t" x="110" y="62">local</text><text class="s" x="110" y="92">on this computer</text><text class="s" x="110" y="112">free, nothing to set up</text><text class="s" x="110" y="132">your laptop is busy</text>
+<rect class="b" x="230" y="30" width="180" height="140" rx="10"/><text class="t" x="320" y="62">remote</text><text class="s" x="320" y="92">on GitHub’s runners</text><text class="s" x="320" y="112">laptop stays free</text><text class="s" x="320" y="132">uses runner minutes</text>
+<rect class="b" x="440" y="30" width="180" height="140" rx="10"/><text class="t" x="530" y="62">split</text><text class="s" x="530" y="92">both at once</text><text class="s" x="530" y="112">fastest answer</text><text class="s" x="530" y="132">costs both</text>
+</svg>

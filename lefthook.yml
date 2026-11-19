@@ -1,0 +1,42 @@
+# Git hooks — the same gates CI runs, so an agent or a human cannot push what CI will reject. While no CI
+# runner is attached, these hooks and `pnpm ci:local` are the only gates there are.
+#
+# Every command goes through `mise exec --`, which is not decoration. A git hook inherits the PATH of whatever
+# invoked git, and `pnpm` often exists only as a mise shim — so from a shell without mise activated (a GUI git
+# client, an agent's shell, a script) a bare `pnpm` hook dies with `sh: pnpm: command not found`, exit 127,
+# and the commit is refused for a reason that has nothing to do with the change.
+pre-commit:
+  parallel: true
+  commands:
+    biome:
+      # Must cover every extension `biome check .` inspects, or the hook is weaker than CI and the
+      # difference only shows up later, as a red pipeline.
+      #
+      # `stage_fixed` is lefthook's own way to re-stage what Biome fixed. It replaces a trailing
+      # `git add {staged_files}`, which reads as if it stages the whole of each file, unstaged hunks included.
+      # On lefthook 2.1 it does not, because lefthook hides the unstaged hunks of a partially staged file
+      # while the hook runs (tested by splitting one file across two commits). `stage_fixed` does not depend
+      # on that.
+      #
+      # Through the `lint:staged` script rather than `pnpm exec biome`: in a project on npm or yarn, Biome is
+      # installed in the kit's own package (`factoryKit.package`), and the root's script knows where.
+      glob: "*.{ts,tsx,mts,js,mjs,cjs,json,jsonc,css,html}"
+      run: mise exec -- pnpm run --silent lint:staged --write {staged_files}
+      stage_fixed: true
+    secrets:
+      # The staged blobs, not the files on disk: a file staged and then deleted is still committed (#34).
+      run: mise exec -- node scripts/check-secrets.mjs --staged
+commit-msg:
+  commands:
+    conventional:
+      run: mise exec -- node scripts/check-commit-msg.mjs {1}
+# Every pre-push gate (`pnpm check`, the board's selftest, the lease check) runs from one script,
+# .lefthook/pre-push/gates.sh, which calls scripts/pre-push.mjs; that file says what runs when. No
+# `commands:` here: lefthook 2.1 skips a pre-push command whenever HEAD's tree matches its push target,
+# whatever the push carries, and does not skip a script (#41; `node scripts/pre-push.mjs selftest` fails on
+# a command added back). `use_stdin` hands the script git's list of the refs being pushed.
+pre-push:
+  scripts:
+    "gates.sh":
+      runner: sh
+      use_stdin: true

@@ -1,0 +1,35 @@
+# Deletes the `ci/**` branches `pnpm ci:remote` left behind (scripts/ci-remote.mjs). The script deletes its
+# own branch when a run ends; this catches the runs that never got there (Ctrl-C, a closed laptop, a
+# dropped VPN). Those branches hold snapshots of uncommitted work, so they do not linger past three days.
+#
+# The only workflow here that writes, and the only thing it writes is a `ci/` ref.
+
+name: Prune ci branches
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete ci/** branches whose head is older than three days
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cutoff=$(date -u -d '3 days ago' +%s)
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/git/matching-refs/heads/ci/" --jq '.[] | [.ref, .object.sha] | @tsv' |
+            while IFS=$'\t' read -r ref sha; do
+              case "$ref" in refs/heads/ci/*) ;; *) continue ;; esac
+              at=$(gh api "repos/${GITHUB_REPOSITORY}/git/commits/${sha}" --jq .committer.date)
+              if [ "$(date -u -d "$at" +%s)" -lt "$cutoff" ]; then
+                echo "deleting ${ref#refs/heads/} (head ${sha:0:9}, committed ${at})"
+                gh api -X DELETE "repos/${GITHUB_REPOSITORY}/git/${ref}"
+              fi
+            done

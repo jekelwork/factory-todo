@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" role="img" aria-labelledby="t"><title id="t">Changes reach main only through a pull request a person merges</title>
+<style>.b{fill:none;stroke:currentColor;stroke-width:1.5}.h{fill:var(--accent-soft,#e6efff);stroke:var(--accent,#2a6fdb);stroke-width:2.5}.t{fill:currentColor;font:14px system-ui,sans-serif;text-anchor:middle}.s{fill:currentColor;opacity:.7;font:11px system-ui,sans-serif;text-anchor:middle}.a{stroke:currentColor;stroke-width:1.5;fill:none;marker-end:url(#m)}.x{stroke:#c0392b;stroke-width:2.5}</style>
+<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+<rect class="b" x="20" y="40" width="140" height="56" rx="10"/><text class="t" x="90" y="73">Claude’s branch</text>
+<path class="a" d="M160 68h58"/>
+<rect class="b" x="220" y="40" width="140" height="56" rx="10"/><text class="t" x="290" y="66">Pull request</text><text class="s" x="290" y="84">checks run here</text>
+<path class="a" d="M360 68h58"/>
+<rect class="h" x="420" y="40" width="80" height="56" rx="10"/><text class="t" x="460" y="73">You</text>
+<path class="a" d="M500 68h38"/>
+<rect class="b" x="540" y="40" width="80" height="56" rx="10"/><text class="t" x="580" y="73">main</text>
+<path class="a" d="M90 96 C90 170 580 170 580 100"/><path class="x" d="M325 140l16 16M341 140l-16 16"/><text class="s" x="333" y="185">straight to main: locked, for the App too</text>
+</svg>

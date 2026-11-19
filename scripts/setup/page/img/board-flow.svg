@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 200" role="img" aria-labelledby="t"><title id="t">You and Claude reach the board through the App, which has its own key</title>
+<style>.b{fill:none;stroke:currentColor;stroke-width:1.5}.h{fill:var(--accent-soft,#e6efff);stroke:var(--accent,#2a6fdb);stroke-width:2.5}.t{fill:currentColor;font:14px system-ui,sans-serif;text-anchor:middle}.s{fill:currentColor;opacity:.7;font:11px system-ui,sans-serif;text-anchor:middle}.a{stroke:currentColor;stroke-width:1.5;fill:none;marker-end:url(#m)}</style>
+<defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="currentColor"/></marker></defs>
+<rect class="b" x="20" y="60" width="150" height="70" rx="10"/><text class="t" x="95" y="92">Claude Code</text><text class="s" x="95" y="112">on your computer</text>
+<path class="a" d="M170 95h68"/><text class="s" x="204" y="85">.pem key</text>
+<rect class="h" x="240" y="60" width="150" height="70" rx="10"/><text class="t" x="315" y="92">The App</text><text class="s" x="315" y="112">signs as …[bot]</text>
+<path class="a" d="M390 95h68"/>
+<rect class="b" x="460" y="60" width="160" height="70" rx="10"/><text class="t" x="540" y="92">The board</text><text class="s" x="540" y="112">issues / work items</text>
+<text class="s" x="320" y="175">Your own comments stay yours: the board tells the App’s notes from people’s.</text>
+</svg>

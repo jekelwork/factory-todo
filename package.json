@@ -1,0 +1,43 @@
+{
+  "name": "factory-kit",
+  "private": true,
+  "version": "1.2.0",
+  "description": "The Knowit Factory Kit: a way of building software with coding agents under human review",
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "pnpm": ">=10"
+  },
+  "packageManager": "pnpm@10.34.5",
+  "scripts": {
+    "check": "pnpm run lint && node .claude/hooks/guard.mjs --selftest && node scripts/setup/selftest.mjs && node scripts/lease.mjs selftest && node scripts/pre-push.mjs selftest && node scripts/ci-selftest.mjs && node scripts/check-secrets.mjs --selftest",
+    "ci": "node scripts/ci.mjs",
+    "lint": "biome check . && node scripts/check-docs.mjs",
+    "lint:fix": "biome check --write .",
+    "lint:staged": "biome check --no-errors-on-unmatched",
+    "ci:local": "node scripts/ci-local.mjs",
+    "ci:remote": "node scripts/ci-remote.mjs",
+    "ci:fetch": "node scripts/ci-fetch.mjs",
+    "audit:prod": "pnpm audit --prod --audit-level moderate",
+    "items": "node scripts/work-items.mjs",
+    "check:items": "node scripts/work-items.mjs selftest",
+    "check:ci": "node scripts/ci-selftest.mjs",
+    "lease": "node scripts/lease.mjs",
+    "kit:setup": "node scripts/setup/server.mjs",
+    "kit:adopt": "node scripts/setup/adopt.mjs",
+    "prepare": "lefthook install || echo 'skipped git hooks (not a git repo yet)'"
+  },
+  "factoryKit": {
+    "numbered": {
+      "adr": {
+        "dir": "docs/adr",
+        "pattern": "^(\\d{4})-",
+        "leased": true
+      }
+    }
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.13",
+    "lefthook": "^2.1.14"
+  }
+}

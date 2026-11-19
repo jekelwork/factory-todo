@@ -1,0 +1,63 @@
+# The pipeline on GitHub-hosted runners: what `pnpm ci:local` runs, as parallel jobs. Project-owned: this is
+# a starting point, grown with the project (README, "Where CI runs").
+#
+#   push to ci/**       a snapshot sent by `pnpm ci:remote`, or `pnpm run ci` in remote or split mode
+#   pull_request        every pull request; make the `ci` job the required check in a branch ruleset
+#   workflow_dispatch   by hand, on any branch
+#
+# Nothing here deploys, signs in to anything or reads a secret, which is why the token is read-only. A
+# `ci/<login>/<sha>` branch holds a snapshot of somebody's working tree, so keep any deploy workflow's branch
+# filters from matching `ci/**`.
+#
+# Growing it. Each `gates` entry is a package.json script, skipped while the script does not exist. When one
+# step is slow, give it a job of its own, and split it with a matrix: on Makers Market the API's integration
+# tests ran as 8 vitest `--shard` jobs writing blob reports, with the coverage floors applied once to the
+# merged report, and the image was built once and handed to 6 Playwright `--shard` jobs as a `docker save`
+# artifact. `pnpm ci:local --only=test:e2e:container --image=<tag> -- --shard=<i>/N` is one such job's
+# step. Set N from measured runs. If the workflow uploads screenshots, name the artifact `test-results`, and
+# `pnpm ci:remote` and `pnpm ci:fetch` download it.
+
+name: CI
+
+on:
+  push:
+    branches: ['ci/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    name: ${{ matrix.script }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The ci:local steps that need no container. `check` stands in until `lint`, `typecheck` and
+        # `coverage` all exist; then drop it, as ci:local does, so the tests run once.
+        script: [check, lint, typecheck, coverage, build, audit:prod, check:items]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: pnpm run --if-present ${{ matrix.script }}
+
+  # The single check to require, and the line `pnpm ci:remote` reads first. `always()`, so a cancelled or
+  # failed job fails this one rather than skipping it: a skipped required check counts as passed.
+  ci:
+    needs: [gates]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: every job passed
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          jq -r 'to_entries[] | "\(.key): \(.value.result)"' <<<"$NEEDS"
+          jq -e 'to_entries | map(select(.value.result != "success")) | length == 0' <<<"$NEEDS" >/dev/null ||
+            { echo "::error::a CI job did not pass"; exit 1; }

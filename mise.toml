@@ -1,0 +1,8 @@
+# Toolchain pins — `mise install` gives every human and agent the same versions. Keep node at the major your
+# runtime image uses, and pnpm exactly at package.json's packageManager.
+[tools]
+node = "22"
+pnpm = "10.34.5"
+
+[env]
+_.file = ".env"

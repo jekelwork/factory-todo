@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/scripts/work-items.mjs\" list --hook",
+            "timeout": 20,
+            "statusMessage": "Checking the work-item board"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/scripts/work-items.mjs\" milestones --hook",
+            "timeout": 20,
+            "statusMessage": "Matching release-* labels to milestones, and summarising them"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/scripts/work-items.mjs\" list --hook",
+            "timeout": 20,
+            "statusMessage": "Checking the work-item board"
+          },
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/scripts/work-items.mjs\" milestones --hook",
+            "timeout": 20,
+            "statusMessage": "Matching release-* labels to milestones, and summarising them"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-.}/.claude/hooks/guard.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(pnpm items list:*)",
+      "Bash(pnpm items show:*)",
+      "Bash(pnpm items collisions:*)",
+      "Bash(pnpm items releases:*)",
+      "Bash(pnpm items mr-status:*)",
+      "Bash(pnpm check:items)",
+      "Bash(node scripts/work-items.mjs list:*)",
+      "Bash(node scripts/work-items.mjs show:*)",
+      "Bash(node scripts/work-items.mjs collisions:*)",
+      "Bash(node scripts/work-items.mjs releases:*)",
+      "Bash(node scripts/work-items.mjs selftest)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run watch:*)",
+      "Bash(gh run download:*)",
+      "Bash(pnpm check)",
+      "Bash(pnpm lint)",
+      "Bash(node scripts/check-docs.mjs)",
+      "Bash(node .claude/hooks/guard.mjs --selftest)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch --show-current)"
+    ],
+    "deny": [
+      "Bash(pkill:*)",
+      "Bash(killall:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(npm install:*)",
+      "Bash(npm i:*)",
+      "Bash(npm ci:*)"
+    ]
+  }
+}
