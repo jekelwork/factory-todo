@@ -67,22 +67,22 @@ not know the cause, I say so.
 - **Suggestion:** say "copy, do not rename" where the file is mentioned, or make the selftest tolerate a
   missing example file and say what is missing in a clear message.
 
-## 6. Replies on the issue were not picked up, and "go" was read as an answer
+## 6. Replies were not picked up (my mistake), and "go" was read as an answer (the agent's mistake)
 
-- **What I did:** item #1 had a plan with two `[REVIEW]` questions. I replied on the issue, twice. (The
-  screenshot of my replies is `image.png`, kept next to this file.)
+- **What I did:** item #1 had a plan with two `[REVIEW]` questions. I replied twice, but I had not read the
+  instructions properly and answered in the wrong place: I commented on the issue. I now know I should have
+  answered on the board item.
 - **What happened:**
-  - Nothing seemed to register: the board did not show the item as answered. I do not know why. I have not
-    confirmed the cause.
+  - Nothing registered, so the board did not show the item as answered. This part was my mistake.
   - When I then typed "go" in Claude Code, the agent treated that as my answer to the second question and
     took the recommended option. Its message was: "Ownership of * went to @jekelwork, and docs/ follows it
     since the second review question got no answer, which I've logged on #1. I'm committing and opening the
     pull request now, unless you want a separate line for docs/ first."
   - So the second question was decided without my having answered it, and the pull request was opened on
     that basis.
-- **Why it hurts:** the kit's own rule says an unanswered point must not be inferred, yet "go" was accepted as
-  an answer. It is also unclear how a reply on the issue becomes an answer on the board.
+- **What the agent should have done:** "go" is not an answer to a `[REVIEW]` question. The kit's own rule says
+  an unanswered point must not be inferred, so the agent should have asked the second question again.
 - **Suggestion:**
-  - Explain, in the setup guide and the first plan, how a comment on the issue turns into an answer: which
-    account counts as the reporter, and what the board shows when a reply is seen.
-  - When a plan has open `[REVIEW]` points, "go" should never close them. The agent should ask again.
+  - Explain, in the setup guide and the first plan, where to answer a `[REVIEW]` question, so a new user does
+    not answer in the wrong place.
+  - When a plan has open `[REVIEW]` points, "go" should never close them.
