@@ -67,22 +67,27 @@ not know the cause, I say so.
 - **Suggestion:** say "copy, do not rename" where the file is mentioned, or make the selftest tolerate a
   missing example file and say what is missing in a clear message.
 
-## 6. Replies were not picked up (my mistake), and "go" was read as an answer (the agent's mistake)
+## 6. The agent missed my replies on the board item, and read "go" as an answer
 
-- **What I did:** item #1 had a plan with two `[REVIEW]` questions. I replied twice, but I had not read the
-  instructions properly and answered in the wrong place: I commented on the issue. I now know I should have
-  answered on the board item.
+- **What I did:** item #1 had a plan with two `[REVIEW]` questions. I answered both on the item itself on
+  GitHub (https://github.com/jekelwork/factory-todo/issues/1): "2. follows the same rules as 1" and
+  "[REVIEW 2]  same as [REVIEW 1]". I then asked in Claude Code "did you get my answers".
 - **What happened:**
-  - Nothing registered, so the board did not show the item as answered. This part was my mistake.
-  - When I then typed "go" in Claude Code, the agent treated that as my answer to the second question and
-    took the recommended option. Its message was: "Ownership of * went to @jekelwork, and docs/ follows it
-    since the second review question got no answer, which I've logged on #1. I'm committing and opening the
-    pull request now, unless you want a separate line for docs/ first."
-  - So the second question was decided without my having answered it, and the pull request was opened on
-    that basis.
-- **What the agent should have done:** "go" is not an answer to a `[REVIEW]` question. The kit's own rule says
-  an unanswered point must not be inferred, so the agent should have asked the second question again.
+  - The board did register my replies: `pnpm items show 1` lists both as `reply`, posted before the agent's
+    coverage round.
+  - The agent never re-read the item. It told me nobody had answered the second question, did not answer my
+    "did you get my answers", and took my "go" as acceptance of its recommended option. Its message was:
+    "Ownership of * went to @jekelwork, and docs/ follows it since the second review question got no answer,
+    which I've logged on #1. I'm committing and opening the pull request now, unless you want a separate
+    line for docs/ first."
+  - The result happened to match what I had answered, but the board's coverage round gives the wrong reason
+    ("go"), and I did not know my replies had been seen.
+- **What the agent should have done:** read the item again when I said I had answered, and never treat "go"
+  as an answer to a `[REVIEW]` question.
+- **Earlier version of this note:** I first wrote that I had answered in the wrong place. That was wrong; the
+  fault was in the agent's reading of the board.
 - **Suggestion:**
-  - Explain, in the setup guide and the first plan, where to answer a `[REVIEW]` question, so a new user does
-    not answer in the wrong place.
+  - Before saying a point is unanswered, the agent should re-read the item, since replies arrive while the
+    session is open.
+  - When the user says they have answered, the agent should check the board and say what it found.
   - When a plan has open `[REVIEW]` points, "go" should never close them.
