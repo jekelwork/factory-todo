@@ -107,3 +107,17 @@ not know the cause, I say so.
   explanation in note 6 for a while. A new user has no way to tell that the two are the same.
 - **Suggestion:** say in the README and the setup guide that on GitHub the "board" is the repository's
   issues, that GitHub Projects is not needed, and that a reply in either place is the same reply.
+
+## 8. `pnpm check` prints a Biome version warning on a fresh install
+
+- **What I did:** ran `mise exec -- pnpm check` on `main` after merging my first pull request.
+- **What happened:** the check passed, but the lint step printed an info message:
+  "The configuration schema version does not match the CLI version 2.5.15. Expected: 2.5.15, Found: 2.5.13.
+  Run the command `biome migrate` to migrate the configuration file." (`biome.json:2`.) It also printed a
+  style hint about string concatenation in `scripts/board/release-deck/deck.html:88`.
+- **Why:** `biome.json` names schema 2.5.13, and `package.json` allows `@biomejs/biome ^2.5.13`, so a fresh
+  install gets the newer 2.5.15 and the two no longer match.
+- **Why it hurts:** neither message fails the check, but a new user cannot tell whether they need to act on
+  them, and they appear in the first clean run.
+- **Suggestion:** pin Biome exactly, or update the schema version in `biome.json` when the dependency moves,
+  and fix or ignore the hint in `deck.html`.
