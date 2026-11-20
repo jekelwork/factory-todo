@@ -1,6 +1,6 @@
 # 0001. Build with coding agents, under human review, from the Factory Kit
 
-Date: YYYY-MM-DD · Status: accepted
+Date: 2026-11-19 · Status: accepted
 
 ## Context
 This repository was started from the Knowit Factory Kit. The kit carries a way of working rather than any

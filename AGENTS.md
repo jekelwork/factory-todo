@@ -1,6 +1,6 @@
-# <Project name> — guide for humans and AI agents
+# factory-todo — guide for humans and AI agents
 
-<One sentence: what this is, and the stack.> This file is the canonical instruction set for any coding
+A todo web app: a React + Vite client, a Hono server on Node and SQLite, all TypeScript. This file is the canonical instruction set for any coding
 agent (Claude Code reads it via CLAUDE.md; Codex, Cursor, Copilot and friends read AGENTS.md directly).
 Keep it short and true; update it when you change how things work.
 
@@ -66,16 +66,15 @@ reason for it:
 9. **Ask before** *(kit)*: changing auth, deleting data, adding a new storage backend, or changing the public
    API shape. A clear answer from a reporter on the board is not that permission; a person in the session
    gives it.
-10. *(project)* Add this codebase's own rules here, each with the incident or the reason behind it — the
-    reason is what lets the next agent apply the rule to a case it does not literally mention.
-
-<!-- example -->
-> *Makers Market example of project rules:* components use only `--hub-*` design tokens, and `pnpm lint` fails on a
-> hard-coded colour; any colour used as text clears WCAG AA (4.5:1), measured by a test; every page works
-> at 390px with no horizontal scroll, asserted across all routes by an e2e test; a zod field with a
-> `.default()` is also `.optional()` in the PATCH schema, because `.partial()` does not strip defaults and
-> every PATCH silently overwrote the stored value.
-<!-- /example -->
+10. *(project)* The rules of this codebase, each with the reason behind it:
+    - **Schema changes are generated** with `pnpm db:generate`, never written by hand: a migration that has
+      run cannot be taken back, and the guard refuses edits to the migrations directory.
+    - **Request and response types come from `src/shared`** as zod schemas, never hand-written in the client
+      or the server: two branches that each change one side typecheck alone and break once merged.
+    - **A zod field with a `.default()` is also `.optional()` in the PATCH schema**, because `.partial()` does
+      not strip defaults and every PATCH would silently overwrite the stored value.
+    - **Server tests run against a real SQLite database**, never a mocked one, so a query SQLite rejects
+      fails the test and not the user.
 
 ## Layout
 ```
@@ -89,7 +88,9 @@ docs/           agents/ (how the skills read this repo), adr/ (append-only), DEC
                 (the PreToolUse guard), and skills/ (the board skills and cut-release).
 .lefthook/      pre-push/gates.sh, the one lefthook script that runs every pre-push gate, through
                 scripts/pre-push.mjs: lefthook skips a pre-push command, not a script.
-<add the project's own directories>
+src/shared/     zod schemas and DTOs: the contract between server and client (not created yet).
+src/server/     Hono API on Node, with the SQLite schema and migrations under db/ (not created yet).
+src/client/     React + Vite single-page app (not created yet).
 ```
 
 ## Commands
