@@ -1,13 +1,88 @@
-## Factory Notes
-1. In the github page it instructs to run "mise trust && mise install && pnpm install", which assumes that I have mise installe.
-2. After I installe mise, I tried to run pnpm kit:setup, but got zsh: command not found: pnpm, because
- "mise installed Node and pnpm, but your shell can't find pnpm because mise isn't activated in that terminal. 
-  The pnpm install in the chain never ran, so dependencies aren't installed yet."
---> the fix was 
-mise exec -- pnpm install
-mise exec -- pnpm kit:setup
+# Factory Kit: feedback from a first run
 
-3. After I run mise exec -- pnpm kit:setup, a website opens that gives me commands to run myself in the terminal. I closed the link info in the terminal with ctr-c and pasted the
-commands and returned to the website and it lost its connection. I was suppose to open a new terminal window and paste commands there leaving the website process open. 
-Experience could be improved by atleast telling me how I can get the connection back.
+Written by a solo developer setting up a new project from the Factory Kit 1.2.0 on macOS (zsh), using Claude
+Code. Each note says what I did, what happened, why (where I know), and what would have helped. Where I do
+not know the cause, I say so.
 
+## 1. The install command assumes mise is already installed
+
+- **What I did:** followed the GitHub page, which says to run `mise trust && mise install && pnpm install`.
+- **What happened:** I did not have mise, so the command could not run.
+- **Suggestion:** say before that line that mise has to be installed first, and link to how to install it.
+
+## 2. `pnpm` is "command not found" until mise is activated in the shell
+
+- **What I did:** installed mise, then ran `pnpm kit:setup`.
+- **What happened:** `zsh: command not found: pnpm`. The same error came back later in the same project when I
+  typed `pnpm items list`.
+- **Why:** `mise install` downloads Node and pnpm, but it does not put them on the shell's PATH. That only
+  happens once mise is activated in the shell, by adding `eval "$(mise activate zsh)"` to `~/.zshrc` and
+  opening a new terminal. The `pnpm install` at the end of the install chain never ran either, so
+  dependencies were not installed.
+- **My workaround:** put `mise exec --` in front of every command:
+  `mise exec -- pnpm install`, then `mise exec -- pnpm kit:setup`.
+- **Why it hurts:** the README, the setup guide and the docs all write plain `pnpm …` and never mention this,
+  so every command in them fails in a fresh terminal.
+- **Suggestion:** have the setup guide check whether `pnpm` is on PATH. If not, show the one-time activation
+  line for the user's shell (zsh, bash and fish differ), or say that `mise exec --` goes in front of each
+  command.
+
+## 3. The setup guide loses its connection if its terminal is interrupted
+
+- **What I did:** ran `mise exec -- pnpm kit:setup`. A page opened in the browser and told me to run some
+  commands myself in the terminal. I pressed Ctrl-C in that terminal to get the prompt back and pasted the
+  commands there.
+- **What happened:** back in the browser, the page had lost its connection. Ctrl-C stopped the server that
+  serves the guide.
+- **What I should have done:** open a second terminal window for the pasted commands and leave the guide's
+  process running.
+- **Suggestion:** tell the user to use a second terminal, and, if the connection is lost, say how to get it
+  back (run `pnpm kit:setup` again).
+
+## 4. No help with creating a GitHub App as a solo developer, and permission changes do not apply on their own
+
+- **What I did:** created a GitHub App for the board, on a personal account and not an organisation.
+- **What happened:**
+  - The guide listed only some of the permissions to enable (I saw pull requests, contents and metadata;
+    I am not sure the list was complete). The kit's own docs list Issues, Pull requests and Contents
+    (read and write) and Metadata (read), so the guide and the docs may disagree.
+  - After I fixed the permissions and saved, it still did not work.
+- **Why:** changing an App's permissions does not apply them to an existing installation until the
+  installation's owner accepts the new permissions. GitHub shows a banner and sends an email. It can also
+  be done under Settings → Applications → Installed GitHub Apps → Configure → Review request. The guide did
+  not mention this step, and it is easy to miss.
+- **Suggestion:**
+  - Add a solo-developer path: how to create the App on a personal account, with the exact permissions to
+    tick.
+  - Say that after any permission change the installation must accept the request, and where to do it.
+
+## 5. `pnpm check` fails when `.env.github.example` is missing
+
+- **What I did:** I renamed `.env.github.example` to `.env.github`, instead of copying it.
+- **What happened:** `pnpm check` went red. The kit's setup selftest (`scripts/setup/adopt.selftest.mjs`)
+  reads `.env.github.example` and crashed with `ENOENT`. Restoring the file with
+  `git checkout .env.github.example` fixed it.
+- **Why:** the selftest needs the example file to exist in the tree. The docs say to copy it
+  (`docs/agents/issue-tracker.md`, GitHub setup, step 5), so the rename was my mistake, but nothing warned me.
+- **Suggestion:** say "copy, do not rename" where the file is mentioned, or make the selftest tolerate a
+  missing example file and say what is missing in a clear message.
+
+## 6. Replies on the issue were not picked up, and "go" was read as an answer
+
+- **What I did:** item #1 had a plan with two `[REVIEW]` questions. I replied on the issue, twice. (The
+  screenshot of my replies is `image.png`, kept next to this file.)
+- **What happened:**
+  - Nothing seemed to register: the board did not show the item as answered. I do not know why. I have not
+    confirmed the cause.
+  - When I then typed "go" in Claude Code, the agent treated that as my answer to the second question and
+    took the recommended option. Its message was: "Ownership of * went to @jekelwork, and docs/ follows it
+    since the second review question got no answer, which I've logged on #1. I'm committing and opening the
+    pull request now, unless you want a separate line for docs/ first."
+  - So the second question was decided without my having answered it, and the pull request was opened on
+    that basis.
+- **Why it hurts:** the kit's own rule says an unanswered point must not be inferred, yet "go" was accepted as
+  an answer. It is also unclear how a reply on the issue becomes an answer on the board.
+- **Suggestion:**
+  - Explain, in the setup guide and the first plan, how a comment on the issue turns into an answer: which
+    account counts as the reporter, and what the board shows when a reply is seen.
+  - When a plan has open `[REVIEW]` points, "go" should never close them. The agent should ask again.
