@@ -121,3 +121,37 @@ not know the cause, I say so.
   them, and they appear in the first clean run.
 - **Suggestion:** pin Biome exactly, or update the schema version in `biome.json` when the dependency moves,
   and fix or ignore the hint in `deck.html`.
+
+## 9. No feedback after I reply to a plan's `[REVIEW]` questions
+
+- **What I did:** on item #3, whose plan had three `[REVIEW]` points, I replied on the issue with one answer:
+  "REVIEW 1: MIT."
+- **What happened:** nothing on the issue changed. It sat at "answered, coverage not assessed" until somebody
+  ran `advance-work-items` in an agent session. Nothing told me that, or that two points were still open. The
+  state is only visible to people who run `pnpm items list`.
+- **Why it hurts:** a reporter cannot tell whether the reply was received, whether it was complete, or what
+  happens next, so they either wait indefinitely or reply again in a different shape. The `[REVIEW]` points
+  are also in section 7 of 8 of a long plan, so answering only one is an easy mistake.
+- **Suggestion:**
+  - When the board sees a new reply, post a short automatic comment from the bot, with no agent session
+    needed. For example: "Reply received. 1 of 3 review points look answered; the rest are still open. An
+    agent will assess coverage the next time the board is worked."
+  - End every plan with a reply checklist ("answer each of REVIEW 1, 2, 3").
+  - Keep each `[REVIEW]` point to a single question, so a partial answer to a compound one does not cost a
+    round. REVIEW 2 asked who the holder is and whether they may license the code, and I answered only the
+    first half.
+
+## 10. A decision made in the agent session is posted by the bot, so it looks like the bot decided
+
+- **What I did:** on item #3 I answered REVIEW 2 and 3 in the Claude Code session, not on the issue.
+- **What happened:** the tooling had to post them as a comment by `my-factory-kit-app[bot]` (AGENTS.md
+  explains why: the state machine reads authorship). Anyone reading the issue later sees the bot's words,
+  with my answers quoted inside a table.
+- **Why it hurts:** the issue is the only record other people can read, and it no longer shows who made the
+  call. For something like a licence holder, that matters.
+- **Suggestion:**
+  - Make the skill require an attribution line in any coverage round that relies on a session answer, for
+    example "Decided in session by <person>, <date>:" followed by their words verbatim.
+  - Better, let `pnpm items comment` take an `--on-behalf-of <person>` flag that writes the line itself, so
+    it is uniform and cannot be forgotten. The state machine keeps reading authorship from the bot, so
+    nothing else changes.
