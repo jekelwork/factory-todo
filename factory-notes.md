@@ -91,3 +91,19 @@ not know the cause, I say so.
     session is open.
   - When the user says they have answered, the agent should check the board and say what it found.
   - When a plan has open `[REVIEW]` points, "go" should never close them.
+
+## 7. "Board" is ambiguous: I thought answering on the issue and answering through the board were different
+
+- **What I did:** I answered the `[REVIEW]` questions on issue #1. I also had GitHub's Projects view of the
+  repository open, which shows the same issue in a side pane
+  (https://github.com/users/jekelwork/projects/13?pane=issue&itemId=311081149&issue=jekelwork%7Cfactory-todo%7C1).
+- **What I was confused about:** the docs say to answer "on the board", and I thought the board was a
+  separate place from the issue. I thought that answering on the issue and answering through the Projects
+  board were two different things, and that only one of them counted.
+- **What is actually true:** they are the same thing. In the kit, the "board" is the repository's issues,
+  read through the API (`pnpm items list`). GitHub Projects is a separate feature that the kit does not use.
+  A comment written in the Projects side pane is a comment on the same issue, so it counts the same.
+- **Why it hurts:** because I believed I might have answered in the wrong place, I accepted a wrong
+  explanation in note 6 for a while. A new user has no way to tell that the two are the same.
+- **Suggestion:** say in the README and the setup guide that on GitHub the "board" is the repository's
+  issues, that GitHub Projects is not needed, and that a reply in either place is the same reply.
