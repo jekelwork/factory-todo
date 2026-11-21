@@ -244,4 +244,4 @@ CI tests on its fork drops `node scripts/ci-selftest.mjs` from its `check` scrip
   version, pulls kit-owned files, and proposes its generic improvements back as a merge request or pull
   request. Until that
   exists, copy changes across by hand, using the ownership lists above.
-- **Client use.** Internal first; a licence and client-facing naming come later.
+- **Client use.** Internal first; client-facing naming comes later. The code is MIT-licensed (`LICENSE`).
